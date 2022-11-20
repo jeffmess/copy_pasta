@@ -5,6 +5,8 @@ module CopyPasta
   class Builder
     attr_accessor :from, :to, :model, :tree, :options, :parent, :overrides, :keep_timestamps
 
+    attr_reader :tables
+
     def invoke!
       items = map_data
       return @tree if items.blank?
@@ -16,14 +18,27 @@ module CopyPasta
       Success(zipped)
     end
 
-    # @param value: Organisation
-    def from_org(org)
-      @from = org
+    def validate
+      return unless @from_collection.nil?
+
+      raise CollectionError.new(message: 'No data supplied to copy. Data is nil and should be an array')
     end
 
     # @param value: Organisation
-    def to_org(org)
-      @to = org
+    # def from_org(org)
+    #   @from = org
+    # end
+    def source(src)
+      @from = src
+    end
+
+    def with_tables(tables)
+      @tables = tables
+    end
+
+    # @param value: Organisation
+    def destination(dest)
+      @to = dest
     end
 
     # @param value: String
