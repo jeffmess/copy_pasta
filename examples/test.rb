@@ -7,6 +7,7 @@ gemfile do
   gem 'rails'
   gem 'pg'
   gem 'factory_girl_rails'
+  gem "copy_pasta", path: "."
 end
 
 require 'active_record'

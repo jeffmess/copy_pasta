@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'copy_pasta/version'
+require 'copy_pasta/builder'
 
 # Copy data between objects swiftly
 module CopyPasta
@@ -20,7 +21,7 @@ module CopyPasta
   # @api public
   def self.build(&block)
     builder = Builder.new
-    builder.instace_eval(&block)
-    builder.invoke
+    builder.instance_eval(&block)
+    builder.invoke!
   end
 end
