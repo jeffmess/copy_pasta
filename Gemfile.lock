@@ -3,6 +3,7 @@ PATH
   specs:
     copy_pasta (0.1.0)
       activerecord (>= 4.2)
+      dry-inflector (= 0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -18,10 +19,19 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
     concurrent-ruby (1.1.10)
+    debug (1.7.0)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
+    dry-inflector (0.1.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
+    io-console (0.5.11)
+    irb (1.5.1)
+      reline (>= 0.3.0)
     minitest (5.16.3)
     rake (12.3.3)
+    reline (0.3.1)
+      io-console (~> 0.5)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
 
@@ -30,6 +40,7 @@ PLATFORMS
 
 DEPENDENCIES
   copy_pasta!
+  debug (>= 1.0.0)
   rake (~> 12.0)
 
 BUNDLED WITH

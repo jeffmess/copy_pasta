@@ -8,6 +8,7 @@ gemfile do
   gem 'pg'
   gem 'factory_girl_rails'
   gem "copy_pasta", path: "."
+  gem 'debug'
 end
 
 require 'active_record'
@@ -115,46 +116,35 @@ end
 
 require 'minitest/autorun'
 require 'copy_pasta'
+require 'debug'
 
 class CategoryTest < Minitest::Test
-  # def test_primary_categories
-  #   FactoryGirl.create(:book, :with_primary_category, :with_secondary_category)
+  def test_nil_collection
+    store1 = FactoryGirl.create(:book_store, :with_scifi)
+    store2 = FactoryGirl.create(:book_store)
 
-  #   assert_equal [Category.find_by_name('Science & Scientists')], Category.primaries
-  # end
+    assert_raises CopyPasta::CollectionError do
+      CopyPasta.build do
+        source store1
+        destination store2
+        with_tables %i[books categories categorizations]
+      end
+    end
+  end
 
-  def test_basic_copy
-    store_1 = FactoryGirl.create(:book_store, :with_scifi)
-    store_2 = FactoryGirl.create(:book_store)
+  def test_one
+    store1 = FactoryGirl.create(:book_store, :with_scifi)
+    store2 = FactoryGirl.create(:book_store)
+    FactoryGirl.create(:book, :with_primary_category, :with_secondary_category)
 
-    puts "====================="
-    puts BookStore.all.inspect
-    puts Book.all.inspect
-    puts Category.all.inspect
-    puts Categorization.all.inspect
-    puts"======================"
-    
     result = CopyPasta.build do
-      source store_1
-      destination store_2
-      # to   to_board # nil will create a new board.
-      with_tables %i[books categories categorizations]
+      source store1
+      destination store2
+      with_tables %i[books]
 
-      # on :comments, data: from_board.lists.flat_map(&:active_comments)
-      # on :activities, data: from_board.lists.flat_map(&:activities)
+      on :books, data: store1.books
     end
 
-    puts "====================="
-    puts BookStore.all.inspect
-    puts Book.all.inspect
-    puts Category.all.inspect
-    puts Categorization.all.inspect
-    puts"======================"
-    asset_equal result, []
+    assert_equal result[:books], store1.books.pluck(:id).zip(store2.reload.books.pluck(:id)).to_h
   end
 end
-
-
-# CopyPasta.build do
-#   puts 'Hey i got here'
-# end

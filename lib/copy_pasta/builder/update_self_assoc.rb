@@ -4,8 +4,6 @@ module CopyPasta
   class Builder
     # Use this class when you need to update a foreign key for a self joined table.
     class UpdateSelfAssoc
-      include Dry::Monads[:result, :try]
-
       # rubocop:disable Metrics/AbcSize
       # @param zipped Array<Hash<Int, Int>> (The zipped tree for this specific table)
       # @param klass Class (Class name for the active record model)

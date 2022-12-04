@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require "dry/inflector"
 
 module CopyPasta
   # Private class called by DSL#build
@@ -15,13 +16,19 @@ module CopyPasta
       zipped = zip_tree(response_data)
       post_update(zipped)
 
-      Success(zipped)
+      zipped
     end
 
     def validate
       return unless @from_collection.nil?
 
       raise CollectionError.new(message: 'No data supplied to copy. Data is nil and should be an array')
+    end
+
+    # if table is symbol then singularize it. if its a klass then leave as is
+    def on(table, data:)
+      @model = Dry::Inflector.new.classify(table)
+      @from_collection = data
     end
 
     # @param value: Organisation
@@ -34,6 +41,7 @@ module CopyPasta
 
     def with_tables(tables)
       @tables = tables
+      @tree = tables.zip([].concat([[]] * tables.size)).to_h
     end
 
     # @param value: Organisation
@@ -147,6 +155,7 @@ module CopyPasta
     end
 
     def uploader?
+      return false # temp
       klass.uploaders&.dig(:attachment).present? || klass.uploaders&.dig(:file).present?
     end
 
@@ -170,6 +179,7 @@ module CopyPasta
     end
 
     def post_update(zipped)
+      return # temp
       return if self_key_refs?
 
       UpdateSelfAssoc.new.call(zipped: zipped, klass: klass, options: options, table_name: table_name,
@@ -186,10 +196,13 @@ module CopyPasta
 
     # Default attributes to be excluded from insertion
     def exclude
+      # []
       ExcludeAttr.call(options, override_options)
     end
 
     def merge_options(inst)
+      return {} # temp
+
       hash = MergeOptions.new(options, tree, inst, to, primary_key?, keep_timestamps).call
       hash[:type] = inst.type if sti?
       hash[:organisation_id] = @to.id if @parent

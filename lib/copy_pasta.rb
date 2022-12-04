@@ -3,6 +3,10 @@
 require 'copy_pasta/version'
 require 'copy_pasta/error'
 require 'copy_pasta/builder'
+require 'copy_pasta/builder/exclude_attr'
+require 'copy_pasta/builder/merge_options'
+require 'copy_pasta/builder/insert'
+require 'copy_pasta/builder/update_self_assoc'
 
 # Copy data between objects swiftly
 module CopyPasta
